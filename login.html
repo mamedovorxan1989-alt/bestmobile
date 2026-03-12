@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Mobile — Giriş</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%233b82f6'/><rect x='9' y='4' width='14' height='24' rx='3' fill='none' stroke='white' stroke-width='2'/><circle cx='16' cy='23' r='1.5' fill='white'/><rect x='13' y='7' width='6' height='1.5' rx='0.75' fill='white'/></svg>">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0b;
+    --surface: #111113;
+    --surface2: #1a1a1e;
+    --border: #252529;
+    --border2: #2e2e34;
+    --text: #f2f2f4;
+    --muted: #8a8a96;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-dim: rgba(59,130,246,0.1);
+    --green: #22c55e;
+    --red: #ef4444;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* BACKGROUND GLOW */
+  .bg-glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    opacity: 0.12;
+  }
+  .bg-glow-1 { background: #3b82f6; top: -200px; left: -200px; }
+  .bg-glow-2 { background: #8b5cf6; bottom: -200px; right: -200px; }
+
+  /* MAIN CARD */
+  .auth-wrap {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* LOGO */
+  .auth-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 32px;
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: var(--accent);
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px rgba(59,130,246,0.35);
+  }
+  .logo-icon svg { width: 24px; height: 24px; }
+  .logo-name { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
+
+  /* CARD */
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+
+  /* TABS */
+  .auth-tabs {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+  }
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .auth-tab.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.35);
+  }
+
+  /* PANELS */
+  .auth-panel { display: none; }
+  .auth-panel.active { display: block; }
+
+  .panel-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .panel-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  /* FORM */
+  .form-row { margin-bottom: 16px; }
+  .form-row-double { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .form-input-wrap { position: relative; }
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  }
+  .form-input.has-icon { padding-right: 42px; }
+  .form-input::placeholder { color: var(--muted); }
+  .form-input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+  .form-input.success { border-color: var(--green); }
+
+  .input-icon {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.15s;
+    display: flex; align-items: center;
+  }
+  .input-icon:hover { color: var(--text); }
+  .input-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .form-error {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 5px;
+    display: none;
+  }
+  .form-error.show { display: block; }
+
+  /* CHECKBOX ROW */
+  .check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--border2);
+    border-radius: 4px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .check-box.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .check-box.checked::after {
+    content: '';
+    width: 9px; height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+  .forgot-link {
+    font-size: 13px;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .forgot-link:hover { opacity: 0.75; }
+
+  /* BUTTONS */
+  .btn-main {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .btn-main:hover { background: var(--accent-hover); }
+  .btn-main:active { transform: scale(0.98); }
+  .btn-main:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-main svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* DIVIDER */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* APPLE BUTTON */
+  .btn-apple {
+    width: 100%;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 11px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .btn-apple:hover { border-color: var(--text); background: var(--border); }
+  .btn-apple svg { width: 16px; height: 16px; }
+
+  /* SUCCESS STATE */
+  .success-box {
+    text-align: center;
+    padding: 16px 0;
+  }
+  .success-icon {
+    width: 52px; height: 52px;
+    background: rgba(34,197,94,0.12);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .success-icon svg { width: 26px; height: 26px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .success-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .success-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+
+  /* LOADER */
+  .loader {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* STRENGTH BAR */
+  .strength-bar {
+    display: flex; gap: 4px; margin-top: 8px;
+  }
+  .strength-seg {
+    flex: 1; height: 3px; border-radius: 2px;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+  .strength-label {
+    font-size: 11px; color: var(--muted); margin-top: 4px;
+    transition: color 0.2s;
+  }
+
+  /* TERMS */
+  .terms-text {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+  .terms-text a { color: var(--accent); cursor: pointer; text-decoration: none; }
+  .terms-text a:hover { text-decoration: underline; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 13.5px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    .auth-card { padding: 24px 20px; }
+    .form-row-double { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<div class="auth-wrap">
+  <!-- LOGO -->
+  <a class="auth-logo" href="index.html">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="5" y="2" width="14" height="20" rx="3" stroke="white" stroke-width="1.8"/>
+        <circle cx="12" cy="18.5" r="1" fill="white"/>
+        <rect x="9.5" y="5" width="5" height="1.2" rx="0.6" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-name">Best Mobile</span>
+  </a>
+
+  <div class="auth-card">
+
+    <!-- TABS -->
+    <div class="auth-tabs" id="authTabs">
+      <div class="auth-tab active" onclick="switchPanel('login')">Giriş</div>
+      <div class="auth-tab" onclick="switchPanel('register')">Qeydiyyat</div>
+    </div>
+
+    <!-- ===== GİRİŞ PANELİ ===== -->
+    <div class="auth-panel active" id="panel-login">
+      <div class="panel-title">Xoş gəldiniz 👋</div>
+      <div class="panel-sub">Hesabınıza daxil olun</div>
+
+      <div class="form-row">
+        <label class="form-label">Email</label>
+        <div class="form-input-wrap">
+          <input class="form-input has-icon" type="email" id="loginEmail" placeholder="email@example.com" oninput="clearError('loginEmailErr')">
+          <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg></span>
+        </div>
+        <div class="form-error" id="loginEmailErr">Düzgün email daxil edin</div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Şifrə</label>
+        <div class="form-input-wrap">
+          <input class="form-input has-icon" type="password" id="loginPass" placeholder="Şifrənizi daxil edin" oninput="clearError('loginPassErr')" onkeydown="if(event.key==='Enter')doLogin()">
+          <span class="input-icon" onclick="togglePass('loginPass', this)">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+        </div>
+        <div class="form-error" id="loginPassErr">Şifrə daxil edin</div>
+      </div>
+
+      <div class="check-row">
+        <label class="check-label" onclick="toggleCheck('rememberCheck')">
+          <div class="check-box" id="rememberCheck"></div>
+          Məni xatırla
+        </label>
+        <span class="forgot-link" onclick="switchPanel('forgot')">Şifrəni unutdum?</span>
+      </div>
+
+      <button class="btn-main" onclick="doLogin()" id="loginBtn">
+        <span id="loginBtnText">Daxil ol</span>
+        <div class="loader" id="loginLoader"></div>
+      </button>
+
+      <div class="divider">və ya</div>
+
+      <button class="btn-apple" onclick="appleLogin()">
+        <svg viewBox="0 0 24 24" fill="var(--text)"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Apple ilə daxil ol
+      </button>
+
+      <p class="terms-text">
+        Daxil olmaqla <a onclick="showToast('Şərtlər tezliklə!')">İstifadə Şərtlərini</a> qəbul edirsiniz
+      </p>
+    </div>
+
+    <!-- ===== QEYDİYYAT PANELİ ===== -->
+    <div class="auth-panel" id="panel-register">
+      <div class="panel-title">Hesab yarat</div>
+      <div class="panel-sub">Best Mobile-a qoşulun — pulsuz</div>
+
+      <div class="form-row-double">
+        <div>
+          <label class="form-label">Ad</label>
+          <input class="form-input" type="text" id="regName" placeholder="Adınız" oninput="clearError('regNameErr')">
+          <div class="form-error" id="regNameErr">Ad daxil edin</div>
+        </div>
+        <div>
+          <label class="form-label">Soyad</label>
+          <input class="form-input" type="text" id="regSurname" placeholder="Soyadınız" oninput="clearError('regSurnameErr')">
+          <div class="form-error" id="regSurnameErr">Soyad daxil edin</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Email</label>
+        <div class="form-input-wrap">
+          <input class="form-input has-icon" type="email" id="regEmail" placeholder="email@example.com" oninput="clearError('regEmailErr')">
+          <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg></span>
+        </div>
+        <div class="form-error" id="regEmailErr">Düzgün email daxil edin</div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Şifrə</label>
+        <div class="form-input-wrap">
+          <input class="form-input has-icon" type="password" id="regPass" placeholder="Ən azı 8 simvol" oninput="checkStrength(this.value);clearError('regPassErr')">
+          <span class="input-icon" onclick="togglePass('regPass', this)">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+        </div>
+        <div class="strength-bar">
+          <div class="strength-seg" id="s1"></div>
+          <div class="strength-seg" id="s2"></div>
+          <div class="strength-seg" id="s3"></div>
+          <div class="strength-seg" id="s4"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel"></div>
+        <div class="form-error" id="regPassErr">Ən azı 8 simvol daxil edin</div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:22px">
+        <label class="form-label">Şifrəni təsdiqlə</label>
+        <div class="form-input-wrap">
+          <input class="form-input has-icon" type="password" id="regPass2" placeholder="Şifrəni təkrar yazın" oninput="clearError('regPass2Err')" onkeydown="if(event.key==='Enter')doRegister()">
+          <span class="input-icon" onclick="togglePass('regPass2', this)">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+        </div>
+        <div class="form-error" id="regPass2Err">Şifrələr uyğun deyil</div>
+      </div>
+
+      <button class="btn-main" onclick="doRegister()" id="regBtn">
+        <span id="regBtnText">Qeydiyyatdan keç</span>
+        <div class="loader" id="regLoader"></div>
+      </button>
+
+      <p class="terms-text">
+        Qeydiyyatdan keçməklə <a onclick="showToast('Şərtlər tezliklə!')">İstifadə Şərtlərini</a> və <a onclick="showToast('Siyasət tezliklə!')">Məxfilik Siyasətini</a> qəbul edirsiniz
+      </p>
+    </div>
+
+    <!-- ===== ŞİFRƏNİ UNUTDUM ===== -->
+    <div class="auth-panel" id="panel-forgot">
+      <div style="margin-bottom:20px">
+        <span style="cursor:pointer;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px" onclick="switchPanel('login')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Geri
+        </span>
+      </div>
+      <div class="panel-title">Şifrəni bərpa et</div>
+      <div class="panel-sub">Email ünvanınızı daxil edin, bərpa linki göndərəcəyik</div>
+
+      <div id="forgotForm">
+        <div class="form-row">
+          <label class="form-label">Email</label>
+          <div class="form-input-wrap">
+            <input class="form-input has-icon" type="email" id="forgotEmail" placeholder="email@example.com" onkeydown="if(event.key==='Enter')doForgot()">
+            <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg></span>
+          </div>
+          <div class="form-error" id="forgotEmailErr">Düzgün email daxil edin</div>
+        </div>
+
+        <button class="btn-main" onclick="doForgot()" id="forgotBtn">
+          <span id="forgotBtnText">Link göndər</span>
+          <div class="loader" id="forgotLoader"></div>
+        </button>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="success-box" id="forgotSuccess" style="display:none">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">Göndərildi! ✉️</div>
+        <div class="success-sub">
+          <span id="forgotEmailSent"></span> ünvanına bərpa linki göndərildi.<br>
+          Email-inizı yoxlayın (spam qovluğunu da!).
+        </div>
+        <button class="btn-main" onclick="switchPanel('login')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Girişə qayıt
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== QEYDİYYAT SUCCESS ===== -->
+    <div class="auth-panel" id="panel-success">
+      <div class="success-box">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">Hesab yaradıldı! 🎉</div>
+        <div class="success-sub">
+          Xoş gəldiniz! Hesabınız uğurla qeydiyyatdan keçdi.<br>
+          İndi platforma daxil olun.
+        </div>
+        <button class="btn-main" onclick="goToApp()">
+          Platforma keç →
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// --- PANEL SWITCH ---
+function switchPanel(name) {
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  // tab highlight
+  const tabs = document.querySelectorAll('.auth-tab');
+  if (name === 'login') { tabs[0].classList.add('active'); tabs[1].classList.remove('active'); }
+  else if (name === 'register') { tabs[1].classList.add('active'); tabs[0].classList.remove('active'); }
+  else { tabs.forEach(t => t.classList.remove('active')); }
+  // reset forgot
+  if (name === 'forgot') {
+    document.getElementById('forgotForm').style.display = '';
+    document.getElementById('forgotSuccess').style.display = 'none';
+    document.getElementById('forgotEmail').value = '';
+    clearError('forgotEmailErr');
+  }
+}
+
+// --- TOGGLE PASSWORD VISIBILITY ---
+function togglePass(inputId, iconEl) {
+  const input = document.getElementById(inputId);
+  const isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  iconEl.innerHTML = isPass
+    ? `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+    : `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+
+// --- CHECKBOX ---
+function toggleCheck(id) { document.getElementById(id).classList.toggle('checked'); }
+
+// --- ERROR HELPERS ---
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg || el.textContent;
+  el.classList.add('show');
+  const input = el.previousElementSibling?.querySelector?.('input') || el.previousElementSibling;
+  if (input && input.classList) input.classList.add('error');
+}
+function clearError(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('show');
+  const input = el.previousElementSibling?.querySelector?.('input') || el.previousElementSibling;
+  if (input && input.classList) input.classList.remove('error');
+}
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+// --- PASSWORD STRENGTH ---
+function checkStrength(val) {
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e'];
+  const labels = ['', 'Zəif', 'Orta', 'Yaxşı', 'Güclü'];
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('s' + i).style.background = i <= score ? colors[score] : 'var(--border)';
+  }
+  const lbl = document.getElementById('strengthLabel');
+  lbl.textContent = val.length ? labels[score] : '';
+  lbl.style.color = colors[score];
+}
+
+// --- LOADING STATE ---
+function setLoading(btnId, loaderId, textId, loading) {
+  document.getElementById(btnId).disabled = loading;
+  document.getElementById(loaderId).style.display = loading ? 'block' : 'none';
+  document.getElementById(textId).style.display = loading ? 'none' : 'inline';
+}
+
+// --- LOGIN ---
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  let valid = true;
+  if (!isValidEmail(email)) { showError('loginEmailErr'); valid = false; }
+  if (!pass) { showError('loginPassErr'); valid = false; }
+  if (!valid) return;
+
+  setLoading('loginBtn', 'loginLoader', 'loginBtnText', true);
+  setTimeout(() => {
+    setLoading('loginBtn', 'loginLoader', 'loginBtnText', false);
+    // Demo: save to localStorage
+    localStorage.setItem('bm_user', JSON.stringify({
+      name: email.split('@')[0],
+      email: email,
+      loggedIn: true
+    }));
+    showToast('Uğurla daxil oldunuz! ✓');
+    setTimeout(() => { window.location.href = 'index.html'; }, 800);
+  }, 1400);
+}
+
+// --- REGISTER ---
+function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const surname = document.getElementById('regSurname').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  let valid = true;
+  if (!name) { showError('regNameErr'); valid = false; }
+  if (!surname) { showError('regSurnameErr'); valid = false; }
+  if (!isValidEmail(email)) { showError('regEmailErr'); valid = false; }
+  if (pass.length < 8) { showError('regPassErr'); valid = false; }
+  if (pass !== pass2) { showError('regPass2Err'); valid = false; }
+  if (!valid) return;
+
+  setLoading('regBtn', 'regLoader', 'regBtnText', true);
+  setTimeout(() => {
+    setLoading('regBtn', 'regLoader', 'regBtnText', false);
+    localStorage.setItem('bm_user', JSON.stringify({
+      name: name + ' ' + surname[0] + '.',
+      email: email,
+      loggedIn: true
+    }));
+    switchPanel('success');
+  }, 1600);
+}
+
+// --- FORGOT ---
+function doForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!isValidEmail(email)) { showError('forgotEmailErr'); return; }
+
+  setLoading('forgotBtn', 'forgotLoader', 'forgotBtnText', true);
+  setTimeout(() => {
+    setLoading('forgotBtn', 'forgotLoader', 'forgotBtnText', false);
+    document.getElementById('forgotEmailSent').textContent = email;
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('forgotSuccess').style.display = 'block';
+  }, 1400);
+}
+
+// --- APPLE ---
+function appleLogin() {
+  showToast('Apple giriş tezliklə aktiv olacaq!');
+}
+
+// --- GO TO APP ---
+function goToApp() {
+  window.location.href = 'index.html';
+}
+
+// --- TOAST ---
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// --- TAB CLICK ON AUTH TABS ---
+document.querySelectorAll('.auth-tab').forEach((tab, i) => {
+  tab.onclick = () => switchPanel(i === 0 ? 'login' : 'register');
+});
+</script>
+</body>
+</html>
