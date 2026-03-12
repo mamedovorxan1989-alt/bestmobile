@@ -752,13 +752,22 @@
 <script>
 // ── AUTH YOXLAMA ──────────────────────────────
 const ADMIN_EMAIL = 'mamedov889@icloud.com';
-const stored = localStorage.getItem('bm_user');
-const bmUser = stored ? JSON.parse(stored) : null;
-
-// Giriş edilməyibsə login.html-ə yönləndir
-if (!bmUser || !bmUser.loggedIn) {
+let bmUser = null;
+try {
+  const stored = localStorage.getItem('bm_user');
+  const parsed = stored ? JSON.parse(stored) : null;
+  if (parsed && parsed.loggedIn && parsed.email) {
+    bmUser = parsed;
+  } else {
+    localStorage.removeItem('bm_user');
+  }
+} catch(e) {
+  localStorage.removeItem('bm_user');
+}
+if (!bmUser) {
   window.location.replace('login.html');
 }
+
 
 // Admin yoxlaması
 const isAdmin = bmUser && bmUser.email === ADMIN_EMAIL;
